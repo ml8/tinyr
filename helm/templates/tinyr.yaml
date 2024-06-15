@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tinyr
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/backend-config: '{"default": "tinyr-backend-config"}'
+spec:
+  ports:
+    - port: {{ .Values.port }}
+      protocol: TCP
+      name: http
+  selector:
+    app: tinyr
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tinyr
+spec:
+  selector:
+    matchLabels:
+      app: tinyr
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+      labels:
+        app: tinyr
+    spec:
+      serviceAccountName: tinyr-ksa
+      containers:
+        - image: {{ .Values.image.image }}
+          name: {{ .Values.image.name }}
+          env:
+            - name: TINYR_DB
+              value: {{ .Values.persistence.mode | quote }}
+            {{- if eq .Values.persistence.mode "pebble" }}
+            - name: TINYR_PEBBLEPATH
+              value: {{ .Values.persistence.pebble.path | quote }}
+            {{- else if eq .Values.persistence.mode "cql" }}
+            - name: TINYR_CQLHOSTS
+              value: {{ .Values.persistence.cql.hosts | quote }}
+            - name: TINYR_CQLKEYSPACE
+              value: {{ .Values.persistence.cql.keyspace | quote }}
+            {{- else if eq .Values.persistence.mode "sql" }}
+            - name: TINYR_CONNSTR
+              value: {{ .Values.persistence.sql.connStr | quote }}
+            - name: TINYR_SQLDRIVER
+              value: {{ .Values.persistence.sql.driver | quote }}
+            {{- end }}
+            - name: TINYR_HOSTNAME
+              value: {{ .Values.hostname | quote }}
+            - name: TINYR_HOMEPAGE
+              value: {{ .Values.homePagePath | quote }}
+            - name: TINYR_PORT
+              value: {{ .Values.port | quote }}
+            - name: TINYR_TLS
+              value: {{ .Values.tls.enabled | quote }}
+            - name: TINYR_DOMAIN
+              value: {{ (first .Values.tls.domain) | quote }}
+            - name: TINYR_CERTDIR
+              value: {{ .Values.tls.certDir | quote }}
+            - name: TINYR_CLIENTID
+              value: {{ .Values.oidc.clientID | quote }}
+            - name: TINYR_CLIENTSECRET
+              value: {{ .Values.oidc.clientSecret | quote }}
+            - name: TINYR_ISSUER
+              value: {{ .Values.oidc.issuer | quote }}
+            - name: TINYR_SCOPES
+              value: {{ .Values.oidc.scopes | quote }}
+            - name: TINYR_COOKIEKEY
+              value: {{ .Values.jwt.cookieKey | quote }}
+            - name: TINYR_JWTKEY
+              value: {{ .Values.jwt.key | quote }}
+            - name: TINYR_JWTTIMEOUT
+              value: {{ .Values.jwt.timeout | quote }}
+            - name: TINYR_CACHESIZE
+              value: {{ .Values.cache.size | quote }}
+            - name: TINYR_CACHETTL
+              value: {{ .Values.cache.ttl | quote }}
+          ports:
+            - containerPort: {{ .Values.port }}
+              name: tinyr
+          volumeMounts:
+            - name: tinyr-store
+              mountPath: {{ .Values.disk.mountPath }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.port }}
+      volumes:
+        - name: tinyr-store
+          persistentVolumeClaim:
+            claimName: tinyr-pv-claim

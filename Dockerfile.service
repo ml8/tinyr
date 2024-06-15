@@ -1,0 +1,18 @@
+FROM --platform=linux/arm64 golang:1.22.2 AS builder
+WORKDIR /src
+COPY . ./
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go mod download
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o migratecql ./db/cqlschema/app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o migratesql ./db/sqlschema/app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o tinyr ./app
+
+FROM alpine:3.19.1
+WORKDIR /src
+COPY --from=builder /src/tinyr /bin/
+COPY --from=builder /src/migratecql /bin/
+COPY --from=builder /src/migratesql /bin/
+COPY --from=builder /src/home.html /bin/
+COPY --from=builder /src/startup.sh /bin/
+COPY --from=builder /src/db/cqlschema/schemas /bin/schemas/cql
+COPY --from=builder /src/db/sqlschema/schemas /bin/schemas/sql
+ENTRYPOINT ["/bin/sh", "/bin/startup.sh"]

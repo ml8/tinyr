@@ -1,0 +1,25 @@
+#apiVersion: v1
+#kind: PersistentVolume
+#metadata:
+#  name: tinyr-pv-volume
+#  labels:
+#    type: local
+#spec:
+#  capacity:
+#    storage: {{ .Values.disk.capacity }}
+#  accessModes:
+#    - ReadWriteOnce
+#  hostPath:
+#    path: {{ .Values.disk.hostPath }}
+#---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tinyr-pv-claim
+spec:
+  storageClassName: standard-rwo
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.disk.capacity }}

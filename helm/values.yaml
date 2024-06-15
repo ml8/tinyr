@@ -1,0 +1,45 @@
+project: my-project
+
+image:
+  image: gcr.io/my-project/tinyr
+  name: tinyr
+    
+hostname: "http://localhost"
+port: 8080
+homePagePath: /bin/home.html
+
+disk:
+  capacity: 10Gi
+  hostPath: /tmp/data
+  mountPath: /var/lib/tinyr
+
+persistence:
+  mode: pebble
+  pebble:
+    path: /var/lib/tinyr/pebbledb
+  sql:
+    driver: mysql
+    connStr:
+  cql:
+    keyspace: tinyr
+    hosts:
+
+tls:
+  enabled: false
+  domain:
+  certDir: /var/lib/tinyr/certs
+
+oidc:
+  clientID: tinyr
+  clientSecret: secret
+  issuer: 
+  scopes: openid,profile
+
+jwt:
+  cookieKey:
+  key: ffffffffffffffff
+  timeout: 2h
+
+cache:
+  size: 1024
+  ttl: 5m
