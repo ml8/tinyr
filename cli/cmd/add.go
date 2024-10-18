@@ -21,6 +21,8 @@ func add(short, long string) {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err.Error())
+	} else if resp.StatusCode != http.StatusOK {
+		fmt.Printf("error %v\n", resp.Status)
 	} else {
 		fmt.Println("ok")
 		resp.Body.Close()
