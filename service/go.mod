@@ -4,12 +4,15 @@ go 1.22.1
 
 require (
 	github.com/cockroachdb/pebble v1.1.0
+	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gocql/gocql v1.6.0
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
 	github.com/peterbourgon/ff v1.7.1
-	github.com/scylladb/gocqlx v1.5.0
+	github.com/scylladb/gocqlx/v2 v2.8.0
 	github.com/zitadel/logging v0.6.0
 	github.com/zitadel/oidc/v3 v3.24.0
+	golang.org/x/crypto v0.31.0
 )
 
 require (
@@ -25,11 +28,7 @@ require (
 	github.com/go-jose/go-jose/v4 v4.0.2 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
-	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
-	github.com/golang/glog v1.2.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
@@ -46,18 +45,16 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/scylladb/go-reflectx v1.0.1 // indirect
-	github.com/scylladb/gocqlx/v2 v2.8.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/zitadel/schema v1.3.0 // indirect
 	go.opentelemetry.io/otel v1.26.0 // indirect
 	go.opentelemetry.io/otel/metric v1.26.0 // indirect
 	go.opentelemetry.io/otel/trace v1.26.0 // indirect
-	golang.org/x/crypto v0.22.0 // indirect
 	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df // indirect
-	golang.org/x/net v0.23.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/oauth2 v0.20.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
-	golang.org/x/text v0.15.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 )
